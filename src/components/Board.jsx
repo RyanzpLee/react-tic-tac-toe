@@ -1,6 +1,6 @@
 import { Square } from './Square';
 
-export const Board = ({ xIsNext, squares, onPlay }) => {
+export const Board = ({ xIsNext, squares, onPlay, currentMove }) => {
   const handleClick = (i) => {
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -14,10 +14,12 @@ export const Board = ({ xIsNext, squares, onPlay }) => {
     onPlay(nextSquares);
   };
 
-  const winner = calculateWinner(squares);
+  const { winner, line } = calculateWinner(squares) || {};
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
+  } else if (currentMove === 9) {
+    status = 'Draw';
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -25,7 +27,7 @@ export const Board = ({ xIsNext, squares, onPlay }) => {
   return (
     <>
       <div className="status">{status}</div>
-      {renderBoard(squares, handleClick)}
+      {renderBoard(squares, handleClick, line)}
     </>
   );
 };
@@ -45,20 +47,25 @@ const calculateWinner = (squares) => {
   for (const line of lines) {
     const [a, b, c] = line;
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { winner: squares[a], line: line };
     }
   }
   return null;
 };
 
-const renderBoard = (squares, handleClick) => {
+const renderBoard = (squares, handleClick, line) => {
   let rows = [];
   for (let i = 0; i < 3; i++) {
     let columns = [];
     for (let j = 0; j < 3; j++) {
       const index = i * 3 + j;
       columns.push(
-        <Square key={`square-${index}`} value={squares[index]} onSquareClick={() => handleClick(index)}></Square>
+        <Square
+          winner={line && line.includes(index)}
+          key={`square-${index}`}
+          value={squares[index]}
+          onSquareClick={() => handleClick(index)}
+        ></Square>
       );
     }
     rows.push(

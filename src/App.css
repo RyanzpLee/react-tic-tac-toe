@@ -50,3 +50,7 @@ body {
 .sort {
   margin-top: 10px;
 }
+
+.winner {
+  background: #046f29;
+}

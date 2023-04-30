@@ -24,11 +24,13 @@ function App() {
     setIsAscending(!isAscending);
   };
 
+  console.log(currentMove);
+
   return (
     <div>
       <div className="game">
         <div className="game-board">
-          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} currentMove={currentMove} />
         </div>
         <div className="game-history">
           <History currentMove={currentMove} history={history} onJump={handleJumpTo} isAscending={isAscending} />
